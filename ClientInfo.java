@@ -1,11 +1,12 @@
 package ru.avalon.javapp.devj120.avalontelecom.models;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 /**
  * Keeps information about a company client.
  */
-public class ClientInfo {
+public abstract class ClientInfo implements Serializable {
 	/**
 	 * Phone number.
 	 */
@@ -22,6 +23,7 @@ public class ClientInfo {
      * Client address.
      */
     private String address;
+
 
     /**
      * Initializes instance attributes with values from corresponding constructor parameters.
@@ -90,4 +92,6 @@ public class ClientInfo {
     public LocalDate getRegDate() {
         return regDate;
     }
+
+    public abstract String getExtraInformation();
 }

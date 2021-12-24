@@ -1,5 +1,6 @@
 package ru.avalon.javapp.devj120.avalontelecom.ui;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,7 +21,8 @@ public class ClientListTableModel implements TableModel {
             "Phone number",
             "Client name",
             "Client address",
-            "Registration date"
+            "Registration date",
+			"Extra information"
         };
 
     private final Set<TableModelListener> modelListeners = new HashSet<>();
@@ -33,12 +35,13 @@ public class ClientListTableModel implements TableModel {
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
 		switch(columnIndex) {
-			case 0: 
+			case 0:
 				return PhoneNumber.class;
-			case 1: 
-			case 2: 
+			case 1:
+			case 2:
+			case 4:
 				return String.class;
-			case 3: 
+			case 3:
 				return LocalDate.class;
 		}
 		throw new IllegalArgumentException("unknown columnIndex");
@@ -50,7 +53,14 @@ public class ClientListTableModel implements TableModel {
 	}
 
 	@Override
-	public int getRowCount() {
+	public int getRowCount() throws ExceptionInInitializerError{
+		try{
+		return ClientList.getInstance().getClientsCount();
+		}
+		catch (ExceptionInInitializerError exception){
+			System.out.println("The file 'clients.dat' is unreadable");
+			System.exit(0);
+		}
 		return ClientList.getInstance().getClientsCount();
 	}
 
@@ -62,6 +72,7 @@ public class ClientListTableModel implements TableModel {
 			case 1: return ci.getName();
 			case 2: return ci.getAddress();
 			case 3: return ci.getRegDate();
+			case 4: return ci.getExtraInformation();
 		}
 		throw new IllegalArgumentException("unknown columnIndex");
 	}
@@ -97,13 +108,19 @@ public class ClientListTableModel implements TableModel {
 	} 
 	
 	/**
-	 * Registers new client. Adds new client by calling of {@link ClientList#addClient}
+	 * Registers new client. Adds new client by calling of {@link ClientList#}
 	 * and notifies model listeners about changes. 
 	 */
-	public void addClient(PhoneNumber number, String name, String address) {
-		ClientList.getInstance().addClient(number, name, address);
-        int rowNdx = ClientList.getInstance().getClientsCount() - 1;
-        fireTableModelEvent(rowNdx, TableModelEvent.INSERT);
+	public void addClientPerson(PhoneNumber number, String name, String clientAddr, String birthDay) {
+		ClientList.getInstance().addPerson(number, name, clientAddr, birthDay);
+		int rowNdx = ClientList.getInstance().getClientsCount() - 1;
+		fireTableModelEvent(rowNdx, TableModelEvent.INSERT);
+	}
+
+	public void addClientCompany(PhoneNumber number, String name, String clientAddr, String directorName, String contactName) {
+		ClientList.getInstance().addCompany(number, name, clientAddr, directorName, contactName);
+		int rowNdx = ClientList.getInstance().getClientsCount() - 1;
+		fireTableModelEvent(rowNdx, TableModelEvent.INSERT);
 	}
 	
 	/**
@@ -140,4 +157,7 @@ public class ClientListTableModel implements TableModel {
             l.tableChanged(tme);
         }
     }
+	public void save() throws IOException {
+		ClientList.getInstance().save();
+	}
 }

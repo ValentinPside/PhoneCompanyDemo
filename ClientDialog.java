@@ -18,6 +18,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
 import ru.avalon.javapp.devj120.avalontelecom.models.ClientInfo;
+import ru.avalon.javapp.devj120.avalontelecom.models.Company;
 
 /**
  * Dialog window for client attributes entering/editing.
@@ -27,6 +28,12 @@ public class ClientDialog extends JDialog {
 	private final JTextField phoneNumField;
 	private final JTextField clientNameField;
 	private final JTextField clientAddrField;
+	private JTextField birthDayField;
+	private JTextField directorNameField;
+	private JTextField contactNameField;
+	private JLabel birthDay;
+	private JLabel directorName;
+	private JLabel contactName;
 	
 	/**
 	 * Set to {@code true}, when a user closes the dialog with "OK" button. 
@@ -46,6 +53,9 @@ public class ClientDialog extends JDialog {
 		phoneNumField = new JTextField(5);
 		clientNameField = new JTextField(30);
 		clientAddrField = new JTextField(30);
+		birthDayField = new JTextField(20);
+		directorNameField = new JTextField(30);
+		contactNameField = new JTextField(30);
 		
 		initLayout();
 		
@@ -91,6 +101,27 @@ public class ClientDialog extends JDialog {
 		lbl.setLabelFor(clientAddrField);
 		p.add(lbl);
 		p.add(clientAddrField);
+		controlsPane.add(p);
+
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		birthDay = new JLabel("Birthday (example: 01/02/1984)");
+		birthDay.setLabelFor(birthDayField);
+		p.add(birthDay);
+		p.add(birthDayField);
+		controlsPane.add(p);
+
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		directorName = new JLabel("Director name");
+		directorName.setLabelFor(directorNameField);
+		p.add(directorName);
+		p.add(directorNameField);
+		controlsPane.add(p);
+
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		contactName = new JLabel("Contact name");
+		contactName.setLabelFor(contactNameField);
+		p.add(contactName);
+		p.add(contactNameField);
 		controlsPane.add(p);
 		
 		add(controlsPane, BorderLayout.CENTER);
@@ -155,16 +186,46 @@ public class ClientDialog extends JDialog {
 	 * Prepares dialog for entering of data about new client.
 	 * Clears all dialog controls; enables phone number fields.
 	 */
-	public void prepareForAdd() {
+	public void prepareForAddCompany() {
 		setTitle("New client registration");
-		
+
 		areaCodeField.setText("");
 		phoneNumField.setText("");
 		clientNameField.setText("");
 		clientAddrField.setText("");
-		
-		areaCodeField.setEnabled(true);
-		phoneNumField.setEnabled(true);
+
+		contactNameField.setText("");
+		directorNameField.setText("");
+		birthDayField.setVisible(false);
+		directorNameField.setVisible(true);
+		contactNameField.setVisible(true);
+
+		birthDay.setVisible(false);
+		directorName.setVisible(true);
+		contactName.setVisible(true);
+
+		areaCodeField.setEditable(true);
+		phoneNumField.setEditable(true);
+	}
+
+	public void prepareForAddPerson() {
+		setTitle("New client registration");
+
+		areaCodeField.setText("");
+		phoneNumField.setText("");
+		clientNameField.setText("");
+		clientAddrField.setText("");
+
+		birthDayField.setText("");
+		directorNameField.setVisible(false);
+		contactNameField.setVisible(false);
+
+		directorName.setVisible(false);
+		contactName.setVisible(false);
+		birthDayField.setVisible(true);
+
+		areaCodeField.setEditable(true);
+		phoneNumField.setEditable(true);
 	}
 	
 	/**
@@ -172,18 +233,59 @@ public class ClientDialog extends JDialog {
 	 * Fills dialog controls with data from provided client information object;
 	 * disables phone number fields.
 	 * 
-	 * @param ci client information used to fill dialog controls
+	 *  ci client information used to fill dialog controls
 	 */
-	public void prepareForChange(ClientInfo ci) {
-		setTitle("Client properties change");
-		
-		areaCodeField.setText(ci.getPhoneNumber().getAreaCode());
-		phoneNumField.setText(ci.getPhoneNumber().getLocalNum());
-		clientNameField.setText(ci.getName());
-		clientAddrField.setText(ci.getAddress());
-		
-		areaCodeField.setEnabled(false);
-		phoneNumField.setEnabled(false);
+	public void prepareForChangeCompany(ClientInfo clientInfo) {
+		setTitle("Editing Company client details");
+
+		areaCodeField.setText(clientInfo.getPhoneNumber().getAreaCode());
+		phoneNumField.setText(clientInfo.getPhoneNumber().getLocalNum());
+		clientNameField.setText(clientInfo.getName());
+		clientAddrField.setText(clientInfo.getAddress());
+		directorNameField.setVisible(true);
+		contactNameField.setVisible(true);
+		directorName.setVisible(true);
+		contactName.setVisible(true);
+
+		directorNameField.setText(clientInfo.getExtraInformation());
+		contactNameField.setText(clientInfo.getExtraInformation());
+		birthDayField.setVisible(false);
+		birthDay.setVisible(false);
+
+		areaCodeField.setEditable(false);
+		phoneNumField.setEditable(false);
+	}
+
+	public void prepareForChangePerson(ClientInfo clientInfo) {
+		setTitle("Editing Person client details");
+
+		areaCodeField.setText(clientInfo.getPhoneNumber().getAreaCode());
+		phoneNumField.setText(clientInfo.getPhoneNumber().getLocalNum());
+		clientNameField.setText(clientInfo.getName());
+		clientAddrField.setText(clientInfo.getAddress());
+		birthDayField.setVisible(true);
+		directorNameField.setVisible(false);
+		contactNameField.setVisible(false);
+		directorName.setVisible(false);
+		contactName.setVisible(false);
+		birthDay.setVisible(true);
+
+		birthDayField.setText(clientInfo.getExtraInformation());
+
+		areaCodeField.setEditable(false);
+		phoneNumField.setEditable(false);
+	}
+
+	public String  getBirthDay() {
+		return birthDayField.getText();
+	}
+
+	public String  getContactName() {
+		return contactNameField.getText();
+	}
+
+	public String getDirectorName() {
+		return directorNameField.getText();
 	}
 	
 	/**
