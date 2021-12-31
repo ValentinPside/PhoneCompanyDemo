@@ -54,13 +54,6 @@ public class ClientListTableModel implements TableModel {
 
 	@Override
 	public int getRowCount() throws ExceptionInInitializerError{
-		try{
-		return ClientList.getInstance().getClientsCount();
-		}
-		catch (ExceptionInInitializerError exception){
-			System.out.println("The file 'clients.dat' is unreadable");
-			System.exit(0);
-		}
 		return ClientList.getInstance().getClientsCount();
 	}
 
@@ -75,6 +68,7 @@ public class ClientListTableModel implements TableModel {
 			case 4: return ci.getExtraInformation();
 		}
 		throw new IllegalArgumentException("unknown columnIndex");
+
 	}
 
 	/**

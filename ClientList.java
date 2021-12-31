@@ -22,18 +22,20 @@ public class ClientList {
      */
     private static ClientList instance;
 
-    static {
-        try {
+    public static void init() throws IOException, ClassNotFoundException {
+        try{
             instance = new ClientList();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+        }catch (IOException | ClassNotFoundException exception){
+            exception.printStackTrace();
         }
     }
+
+
 
     private static final String FILE_NAME = "clients.dat";
 
     /**
-     * Keeps the list of of clients. Clients are stored in the same order,
+     * Keeps the list of clients. Clients are stored in the same order,
      * which they have been registered in.
      */
     private List<ClientInfo> clients;
@@ -142,6 +144,9 @@ public class ClientList {
     public void save() throws  IOException {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
             oos.writeObject(clients);
+        } catch (IOException e){
+            System.out.println("The file 'clients.dat' can't be saved");
+            System.exit(0);
         }
     }
 }
